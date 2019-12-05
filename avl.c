@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <malloc.h>
+#include <time.h>
+#include <stdlib.h>
+
 #define FALSE 0
 #define TRUE 1
 typedef char BOOL;
@@ -217,4 +222,59 @@ int getHeight(struct avlNode* node)
 		return 0;
 	else
 		return node->height;
+}
+
+
+int get_avl_Tree_height(struct avlNode* root) { // avl 트리
+	if (!root)
+		return 0;
+	else {
+		int left_h = get_avl_Tree_height(root->left); // 왼쪽 서브트리의 높이를 순환호출을 통해 얻는다.
+		int right_h = get_avl_Tree_height(root->right); // 같은 방법으로 오른쪽 서브트리의 높이를 얻는다.
+		return 1 + (left_h > right_h ? left_h : right_h); // 둘 중 큰 값에 1을 더해 반환한다.
+	}
+}
+
+int* rand_num(num) {
+	int i, temp, x, y;
+	int* data = (int*)malloc(sizeof(int) * num);
+
+	for (i = 0; i < num; i++) {
+		data[i] = i + 1;
+	}
+	for (i = 0; i < 100; i++) {
+		x = rand() % num;
+		y = rand() % num;
+
+		if (x != y) {
+			temp = data[x];
+			data[x] = data[y];
+			data[y] = temp;
+		}
+	}
+	return data;
+}
+int main()
+{
+	struct avlTree* avl_tree;
+	avl_tree = CreateTree(Compare);
+	srand((unsigned int)time(NULL));
+	int num = 100;
+	int* key;
+	int* arr;
+	arr = rand_num(num);
+	for (int j = 0; j < num; j++) {
+		//AVL입력
+		key = (int*)malloc(sizeof(int));
+		*key = arr[j];
+		AddNode(avl_tree, (void*)key);
+		//	Traverse(tree->root);
+	}
+
+	//printf("AVL 높이1 %d\n", height(avl_tree->root));
+	printf("AVL 높이2 %d\n", get_avl_Tree_height(avl_tree->root));
+
+	printf("\n");
+
+	return 0;
 }

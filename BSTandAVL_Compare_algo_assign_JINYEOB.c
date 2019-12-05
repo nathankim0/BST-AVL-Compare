@@ -33,15 +33,15 @@ struct avlTree {
 
 /*탐색 횟수 체크 위한 전역변수*/
 int bst_search_cnt = 0, avl_search_cnt=0;
-int bst_height = 0, avl_height = 0;
+//int bst_height = 0, avl_height = 0;
 
 /*사용될 함수들*/
 int get_bst_Tree_height(bstNode* root);
 int get_avl_Tree_height(struct avlNode* root);
 int* rand_num(num);
 
-void func_bst(bstNode* tree, int* arr, int num);
-void func_avl(struct avlTree* tree, int* arr, int num);
+void func_bst(int num);
+void func_avl(int num);
 
 
 bstNode* BST_insert(bstNode* root, int value);
@@ -74,33 +74,22 @@ struct avlNode* AVL_search(struct avlNode* root, int value);
 
 int main()
 {
-	//100~10000 까지 500씩 증가
+	//100~2000 까지 500씩 증가
 	int n = 0;
-	for (int i = 100; i <= 4000; i = 500*n) {
+	srand((unsigned int)time(NULL));
+
+	for (int i = 100; i <= 2000; i = 500*n) {
 		n++;
 		printf("*****************노드개수:[%d]*****************\n", i);
 
-		bstNode* bst_tree = NULL;
+		//높이 평균, 랜덤 숫자 탐색 횟수의 평군 (100회 수행)
+		func_bst(i); //bst
+		func_avl(i); //avl
 
-		struct avlTree* avl_tree;
-		avl_tree = CreateTree(Compare);
-
-		int* arr=NULL;
-		int* arr2 = NULL;
-		//배열에 i만큼 랜덤값 입력
-		
-		//랜덤 숫자 탐색 횟수의 평균 (100회 수행)
-		func_bst(bst_tree, arr, i);
-		func_avl(avl_tree, arr2, i);
-
-
-		//BST_print(bst_tree);
 		printf("\n");
 	}
 	return 0;
 }
-
-
 
 /********************************************************/
 /*                                                      */
@@ -127,83 +116,87 @@ int get_avl_Tree_height(struct avlNode* root) { // avl 트리
 		return 1 + (left_h > right_h ? left_h : right_h); // 둘 중 큰 값에 1을 더해 반환한다.
 	}
 }
-int* rand_num(num) {
-	int i, temp, x, y;
+
+
+int* rand_num(int num) {
+	int i, temp, x;
 	int* data = (int*)malloc(sizeof(int) * num);
-	srand((unsigned int)time(NULL));
-
 	for (i = 0; i < num; i++) {
-		data[i] = i + 1;
-	}
-	for (i = 0; i < 20; i++) {
-		x = rand() % num;
-		y = rand() % num;
-
-		if (x != y) {
-			temp = data[x];
-			data[x] = data[y];
-			data[y] = temp;
+		data[i] = rand() % num + 1;
+		for (x = 0; x < i; x++) {
+			if (data[i] == data[x]) {
+				i--;
+				break;
+			}
 		}
 	}
 	return data;
 }
 
-/*BST 랜덤 숫자 탐색 횟수의 평균 (100회 수행)*/
-void func_bst(bstNode* tree, int* arr, int num) {
+/*BST*/
+void func_bst(int num) {
+	int* arr;
 	int tmp;
 	double sum_cnt = 0;
 	double sum_height = 0;
-
 	for (int i = 0; i < 100; i++) {
-		arr = rand_num(num);
+		bstNode* bst_tree = NULL;
 
+		arr = rand_num(num);
 		//랜덤 데이터 입력
+
 		for (int j = 0; j < num; j++) {
-			//BST입력
-			tree = BST_insert(tree, arr[j]);
+			//BST입력			
+			//printf("%d ", arr[j]);
+			bst_tree = BST_insert(bst_tree, arr[j]);
 		}
+		//printf("\n============================================\n");
 
 		bst_search_cnt = 0;
 
 		tmp = rand() % num;
+		BST_search(bst_tree, tmp);
 
-		BST_search(tree, tmp);
 		sum_cnt += bst_search_cnt;
-		sum_height += get_bst_Tree_height(tree);
+		sum_height += get_bst_Tree_height(bst_tree);
+		//printf("bst height: %d \n", get_bst_Tree_height(bst_tree));
 		//printf("bst cnt: %d\n", bst_search_cnt);
 	}
+	//BST_print(bst_tree);
 	printf("BST 평균 높이(100회 수행): %.1f\n", sum_height/100);
 	printf("BST 랜덤 숫자 탐색 횟수의 평균 (100회 수행): %.1f\n\n", sum_cnt / 100);
 }
 
-/*AVL 랜덤 숫자 탐색 횟수의 평균 (100회 수행)*/
-void func_avl(struct avlTree* tree, int* arr, int num) {
+/*AVL*/
+void func_avl(int num) {
+	int* arr;
 	int tmp;
 	double sum_cnt = 0;
 	double sum_height = 0;
 	int* key;
-
 	for (int i = 0; i < 100; i++) {
+		struct avlTree* avl_tree;
+		avl_tree = CreateTree(Compare);
 		arr = rand_num(num);
-
 		//랜덤 데이터 입력
 		for (int j = 0; j < num; j++) {
 			//AVL입력
 			key = (int*)malloc(sizeof(int));
 			*key = arr[j];
-			AddNode(tree, (void*)key);
-			//Traverse(avl_tree->root);
+			//printf("%d ", arr[j]);
+			AddNode(avl_tree, (void*)key);
+			//	Traverse(tree->root);
 		}
+		//printf("\n============================================\n");
 
 		avl_search_cnt = 0;
 		tmp = rand() % num;
+		AVL_search(avl_tree->root, tmp);
 
-		AVL_search(tree->root, tmp);
 		sum_cnt += avl_search_cnt;
-		sum_height += get_avl_Tree_height(tree->root);
-
-		//printf("avl cnt: %d\n", avl_search_cnt);
+		sum_height += get_avl_Tree_height(avl_tree->root);
 	}
+
 	printf("AVL 평균 높이(100회 수행): %.1f\n", sum_height/100);
 	printf("AVL 랜덤 숫자 탐색 횟수의 평균 (100회 수행): %.1f\n\n", sum_cnt / 100);
 }
