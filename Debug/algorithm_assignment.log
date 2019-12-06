@@ -1,3 +1,3 @@
 ﻿  BSTandAVL_Compare_algo_assign_JINYEOB.c
-C:\Users\jinyeob\source\repos\algorithm_assignment\algorithm_assignment\BSTandAVL_Compare_algo_assign_JINYEOB.c(122,9): warning C4101: 'temp' :참조되지 않은 지역 변수입니다.
+C:\Users\jinyeob\source\repos\algorithm_assignment\algorithm_assignment\BSTandAVL_Compare_algo_assign_JINYEOB.c(121,9): warning C4101: 'temp' :참조되지 않은 지역 변수입니다.
   algorithm_assignment.vcxproj -> C:\Users\jinyeob\source\repos\algorithm_assignment\Debug\algorithm_assignment.exe

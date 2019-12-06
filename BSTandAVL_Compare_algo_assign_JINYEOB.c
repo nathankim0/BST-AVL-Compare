@@ -72,12 +72,11 @@ struct avlNode* AVL_search(struct avlNode* root, int value);
 /*                                                      */
 /********************************************************/
 
-int main()
+int main(void)
 {
+	srand((unsigned int)time(NULL));//난수 발생
 	//100~2000 까지 500씩 증가
 	int n = 0;
-	srand((unsigned int)time(NULL));
-
 	for (int i = 100; i <= 2000; i = 500*n) {
 		n++;
 		printf("*****************노드개수:[%d]*****************\n", i);
@@ -135,30 +134,28 @@ int* rand_num(int num) {
 
 /*BST*/
 void func_bst(int num) {
-	int* arr;
-	int tmp;
-	double sum_cnt = 0;
-	double sum_height = 0;
-	for (int i = 0; i < 100; i++) {
+	int* arr; //난수 받을 배열 (rand_num)
+	int tmp; //검색할 랜덤 숫자
+	double sum_cnt = 0; //탐색 횟수 합
+	double sum_height = 0; //높이 합
+	for (int i = 0; i < 100; i++) { //100번 수행
 		bstNode* bst_tree = NULL;
+		arr = rand_num(num); //랜덤 데이터 입력
 
-		arr = rand_num(num);
-		//랜덤 데이터 입력
-
-		for (int j = 0; j < num; j++) {
-			//BST입력			
-			//printf("%d ", arr[j]);
+		//노드에 입력
+		for (int j = 0; j < num; j++) { //노드개수만큼 수행
+		  //printf("%d ", arr[j]); //값확인용
 			bst_tree = BST_insert(bst_tree, arr[j]);
 		}
 		//printf("\n============================================\n");
 
-		bst_search_cnt = 0;
+		bst_search_cnt = 0; //탐색횟수 변수(전역) 초기화
 
 		tmp = rand() % num;
-		BST_search(bst_tree, tmp);
-
+		BST_search(bst_tree, tmp); //탐색
 		sum_cnt += bst_search_cnt;
-		sum_height += get_bst_Tree_height(bst_tree);
+
+		sum_height += get_bst_Tree_height(bst_tree);//높이구하기
 		//printf("bst height: %d \n", get_bst_Tree_height(bst_tree));
 		//printf("bst cnt: %d\n", bst_search_cnt);
 	}
@@ -169,34 +166,33 @@ void func_bst(int num) {
 
 /*AVL*/
 void func_avl(int num) {
-	int* arr;
-	int tmp;
-	double sum_cnt = 0;
-	double sum_height = 0;
-	int* key;
-	for (int i = 0; i < 100; i++) {
+	int* arr;//난수 받을 배열 (rand_num)
+	int tmp;//검색할 랜덤 숫자
+	double sum_cnt = 0;//탐색 횟수 합
+	double sum_height = 0;//높이 합
+	int* key;//데이터 입력받을 변수
+	for (int i = 0; i < 100; i++) {//100번 수행
 		struct avlTree* avl_tree;
 		avl_tree = CreateTree(Compare);
-		arr = rand_num(num);
-		//랜덤 데이터 입력
+		arr = rand_num(num);//랜덤 데이터 입력
+
+		//노드에 입력
 		for (int j = 0; j < num; j++) {
-			//AVL입력
 			key = (int*)malloc(sizeof(int));
 			*key = arr[j];
-			//printf("%d ", arr[j]);
+			//printf("%d ", arr[j]);//값 확인용
 			AddNode(avl_tree, (void*)key);
-			//	Traverse(tree->root);
 		}
 		//printf("\n============================================\n");
 
-		avl_search_cnt = 0;
+		avl_search_cnt = 0;//탐색횟수 변수(전역) 초기화
+
 		tmp = rand() % num;
-		AVL_search(avl_tree->root, tmp);
-
+		AVL_search(avl_tree->root, tmp); //탐색
 		sum_cnt += avl_search_cnt;
-		sum_height += get_avl_Tree_height(avl_tree->root);
-	}
 
+		sum_height += get_avl_Tree_height(avl_tree->root);//높이 구하기
+	}
 	printf("AVL 평균 높이(100회 수행): %.1f\n", sum_height/100);
 	printf("AVL 랜덤 숫자 탐색 횟수의 평균 (100회 수행): %.1f\n\n", sum_cnt / 100);
 }
